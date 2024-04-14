@@ -133,7 +133,7 @@ class BrandController extends Controller
                 $ex->getMessage()
             );
         }
-    }
+    } 
 
     public function Active($id){ 
         try {
