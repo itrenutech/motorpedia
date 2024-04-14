@@ -40,9 +40,9 @@
                                     <span key="t-ecommerce">Variant</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{route('model.create')}}" key="t-products">Add Model</a></li>
-                                    <li><a href="{{route('model.index')}}" key="t-orders">Active Model</a></li>
-                                    <li><a href="{{route('model.inactive')}}" key="t-customers">Inactive Model</a></li>
+                                    <li><a href="" key="t-products">Add Model</a></li>
+                                    <li><a href="" key="t-orders">Active Model</a></li>
+                                    <li><a href="" key="t-customers">Inactive Model</a></li>
                                 </ul>
                             </li>
                         </ul>
