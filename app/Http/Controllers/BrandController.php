@@ -135,7 +135,7 @@ class BrandController extends Controller
         }
     }
 
-    public function Active($id){
+    public function Active($id){ 
         try {
             $data = brands::where('id', $id)->update([
                 'updated_at' => date('Y-m-d H:i:s'),
