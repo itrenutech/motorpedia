@@ -34,6 +34,17 @@
                                     <li><a href="{{route('model.inactive')}}" key="t-customers">Inactive Model</a></li>
                                 </ul>
                             </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-layer"></i>
+                                    <span key="t-ecommerce">Variant</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{{route('model.create')}}" key="t-products">Add Model</a></li>
+                                    <li><a href="{{route('model.index')}}" key="t-orders">Active Model</a></li>
+                                    <li><a href="{{route('model.inactive')}}" key="t-customers">Inactive Model</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                     <!-- Sidebar -->
