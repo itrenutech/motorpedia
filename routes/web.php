@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ModelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,5 +36,14 @@ Route::group([
         Route::post('brand/update', [BrandController::class, 'Update'])->name('barnd.update');
         Route::delete('brand/{id}/destroy', [BrandController::class, 'Destroy'])->name('brand.destroy');
         Route::get('brand/{id}/active', [BrandController::class, 'Active'])->name('brand.active');
+
+        Route::get('model/list', [ModelController::class, 'Index'])->name('model.index');
+        Route::get('model/create', [ModelController::class, 'Create'])->name('model.create');
+        Route::get('model/inactive/list', [ModelController::class, 'Inactive'])->name('model.inactive');
+        Route::post('model/create/submit', [ModelController::class, 'Submit'])->name('model.submit');
+        Route::get('model/{id}/edit', [ModelController::class, 'Edit'])->name('model.edit');
+        Route::post('model/update', [ModelController::class, 'Update'])->name('model.update');
+        Route::delete('model/{id}/destroy', [ModelController::class, 'Destroy'])->name('model.destroy');
+        Route::get('model/{id}/active', [ModelController::class, 'Active'])->name('model.active');
     });
 });

@@ -7,67 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Session;
 use Exception;
+use App\Models\models;
 
-class BrandController extends Controller
+class ModelController extends Controller
 {
     //
     public function Index()
     {
-        $data = brands::where('status', 1)->get();
-        return view('Admin.Brand.Index')->with(compact('data'));
-    }
-
-    public function Inactive()
-    {
-        $data = brands::where('status', 0)->get();
-        return view('Admin.Brand.Inactive')->with(compact('data'));
-    }
-
-    public function Create()
-    {
-        return view('Admin.Brand.Create');
-    }
-
-    public function Submit(Request $req)
-    {
         try {
-            $req->validate([
-                'brand_logo' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed,
-                'brand_name' => 'required'
-            ]);
-            $file = $req->file('brand_logo');
-            $slug = Str::slug($req->brand_name);
-            if ($file) {
-                $extension = $file->getClientOriginalExtension();
-                $timestamp = now()->format('Y-m-d_H-i-s');
-                $fileName = $timestamp . '_' . $slug . '.' . $extension;
-
-                // Create a folder if it doesn't exist
-                $folderPath = './brand/';
-                if (!file_exists($folderPath)) {
-                    mkdir($folderPath, 0777, true);
-                }
-
-                // Move the file to the folder
-                $file->move($folderPath, $fileName);
-            }else{
-                $fileName='';
-            }
-            $form = [
-                'brand_name' => $req->brand_name,
-                'brand_logo' => $fileName,
-                'slug' => $slug,
-                'created_by' => Session::get('adminSession')['id'],
-                'created_at' => date('Y-m-d H:i:s'),
-                'status' => 1
-            ];
-            $val = brands::insertGetId($form);
-            if ($val == 0) {
-                throw new Exception('Something worng in brand add');
-            }
-            return redirect()
-                ->route("brand.index")
-                ->with("flash_message_success", "Brand added successfully!!!");
+            $data = models::with(['getBrand'])->where('status', 1)->orderby('id', 'desc')->get();
+            return view('Admin.Model.Index')->with(compact('data'));
         } catch (Exception $ex) {
             return \Redirect::back()->with(
                 "error",
@@ -76,11 +25,81 @@ class BrandController extends Controller
         }
     }
 
+    public function Inactive()
+    {
+        $data = models::with(['getBrand'])->where('status', 0)->orderby('id', 'desc')->get();
+        return view('Admin.Model.Inactive')->with(compact('data'));
+    }
+
+    public function Create(Request $req)
+    {
+        try {
+            $brand = brands::where('status', 1)->orderBy('brand_name')->get();
+            return view('Admin.Model.Create')->with(compact('brand'));
+        } catch (Exception $ex) {
+            return \Redirect::back()->with(
+                "error",
+                $ex->getMessage()
+            );
+        }
+    }
+
+    public function Submit(Request $req)
+    {
+        try {
+            $req->validate([
+                'brand_id' => 'required',
+                'model_pic' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed,
+                'model_name' => 'required'
+            ]);
+            $file = $req->file('model_pic');
+            $slug = Str::slug($req->model_name);
+            if ($file) {
+                $extension = $file->getClientOriginalExtension();
+                $timestamp = now()->format('Y-m-d_H-i-s');
+                $fileName = $timestamp . '_' . $slug . '.' . $extension;
+
+                // Create a folder if it doesn't exist
+                $folderPath = './models/';
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath, 0777, true);
+                }
+
+                // Move the file to the folder
+                $file->move($folderPath, $fileName);
+            } else {
+                $fileName = '';
+            }
+            $form = [
+                'brand_id' => $req->brand_id,
+                'model_name' => $req->model_name,
+                'model_pic' => $fileName,
+                'slug' => $slug,
+                'created_by' => Session::get('adminSession')['id'],
+                'created_at' => date('Y-m-d H:i:s'),
+                'status' => 1
+            ];
+            $val = models::insertGetId($form);
+            if ($val == 0) {
+                throw new Exception('Something worng in Model add');
+            }
+            return redirect()
+                ->route("model.index")
+                ->with("flash_message_success", "Model added successfully!!!");
+        } catch (Exception $ex) {
+            return \Redirect::back()->with(
+                "error",
+                $ex->getMessage()
+            )->withInput();
+        }
+    }
+
     public function Edit($id)
     {
         try {
-            $data = brands::where('status', 1)->where('id', $id)->first();
-            return view('Admin.Brand.Edit')->with(compact('data'));
+            $brand = brands::where('status', 1)->orderBy('brand_name')->get();
+            $data = models::where('status', 1)->where('id', $id)->first();
+            return view('Admin.Model.Edit')->with(compact(['data', 'brand']));
         } catch (Exception $ex) {
             return \Redirect::back()->with(
                 "error",
@@ -93,78 +112,75 @@ class BrandController extends Controller
     {
         try {
             $req->validate([
-                'brand_name' => 'required',
-                'brand_logo' => 'file|mimes:jpeg,png,jpg,gif|max:2048',
+                'brand_id' => 'required',
+                'model_pic' => 'file|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed,
+                'model_name' => 'required'
             ]);
-            $file = $req->file('brand_logo');
-            $slug = Str::slug($req->brand_name);
+            $file = $req->file('model_pic');
+            $slug = Str::slug($req->model_name);
             if ($file) {
                 $extension = $file->getClientOriginalExtension();
                 $timestamp = now()->format('Y-m-d_H-i-s');
                 $fileName = $timestamp . '_' . $slug . '.' . $extension;
 
                 // Create a folder if it doesn't exist
-                $folderPath = './brand/';
+                $folderPath = './models/';
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath, 0777, true);
                 }
 
                 // Move the file to the folder
                 $file->move($folderPath, $fileName);
-            }else{
-                $fileName=$req->pre_brand_logo;
+            } else {
+                $fileName = $req->pre_model_pic;
             }
-
-            if ($fileName == '') {
-                throw new Exception('Image is missing');
-            }
-
-            $data = brands::where('id', $req->bid)->update([
-                'brand_name' => $req->brand_name,
+            models::where('id', $req->mid)->update([
+                'brand_id' => $req->brand_id,
+                'model_name' => $req->model_name,
+                'model_pic' => $fileName,
                 'slug' => $slug,
-                'brand_logo' => $fileName,
-                'updated_at' => date('Y-m-d H:i:s'),
-                'modified_by' => Session::get('adminSession')['id']
-            ]);
-            return redirect()
-                ->route("brand.index")
-                ->with("flash_message_success", "Brand updated successfully!!!");
-        } catch (Exception $ex) {
-            return \Redirect::back()->with(
-                "error",
-                $ex->getMessage()
-            )->withInput();
-        }
-    }
-
-    public function Destroy($id){
-        try {
-            $data = brands::where('id', $id)->update([
-                'updated_at' => date('Y-m-d H:i:s'),
                 'modified_by' => Session::get('adminSession')['id'],
-                'status'=>0
+                'updated_at' => date('Y-m-d H:i:s'),
             ]);
             return redirect()
-                ->route("brand.index")
-                ->with("flash_message_warning", "Brand deleted successfully!!!");
+                ->route("model.index")
+                ->with("flash_message_success", "Model updated successfully!!!");
         } catch (Exception $ex) {
             return \Redirect::back()->with(
                 "error",
                 $ex->getMessage()
             );
         }
-    } 
+    }
 
+    public function Destroy($id){
+        try {
+            $data = models::where('id', $id)->update([
+                'updated_at' => date('Y-m-d H:i:s'),
+                'modified_by' => Session::get('adminSession')['id'],
+                'status'=>0
+            ]);
+            return redirect()
+                ->route("model.index")
+                ->with("flash_message_warning", "Model deleted successfully!!!");
+        } catch (Exception $ex) {
+            return \Redirect::back()->with(
+                "error",
+                $ex->getMessage()
+            );
+        }
+    }
+    
     public function Active($id){ 
         try {
-            $data = brands::where('id', $id)->update([
+            $data = models::where('id', $id)->update([
                 'updated_at' => date('Y-m-d H:i:s'),
                 'modified_by' => Session::get('adminSession')['id'],
                 'status'=>1
             ]);
             return redirect()
-                ->route("brand.index")
-                ->with("flash_message_success", "Brand Active successfully!!!");
+                ->route("model.index")
+                ->with("flash_message_success", "Model Active successfully!!!");
         } catch (Exception $ex) {
             return \Redirect::back()->with(
                 "error",

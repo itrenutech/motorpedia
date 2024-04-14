@@ -13,13 +13,18 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Brand List </h4>
-                <a href="{{route('brand.create')}}" class="btn btn-primary btn-sm">+ Add Brand</a>
+                <h4 class="mb-sm-0 font-size-18">Model List </h4>
+                <a href="{{route('model.create')}}" class="btn btn-primary btn-sm">+ Add Model</a>
             </div>
         </div>
     </div>
     <!-- end page title -->
     <div class="row">
+        @if(Session::has('error'))
+        <div class="alert alert-danger" role="alert" id="erroralert">
+            <strong>{{Session::get('error')}}</strong>
+        </div>
+        @endif
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -28,6 +33,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Brand</th>
                                 <th>Logo</th>
                                 <th>Action</th>
                             </tr>
@@ -37,17 +43,18 @@
                             @foreach($data as $row)
                             <tr>
                                 <td>@php echo $i; @endphp</td>
-                                <td width="60%">{{$row->brand_name}}</td>
-                                <td><img src="{{URL::asset('brand')}}/{{$row->brand_logo}}" width="50%"></td>
+                                <td width="60%">{{$row->model_name}}</td>
+                                <td width="60%">{{$row->getBrand->brand_name}}</td>
+                                <td><img src="{{URL::asset('models')}}/{{$row->model_pic}}" width="50%"></td>
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="{{route('brand.edit',[$row])}}" class="dropdown-item"><i class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a></li>
+                                            <li><a href="{{route('model.edit',[$row])}}" class="dropdown-item"><i class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a></li>
                                             <li>
-                                                <a href="#" class="dropdown-item remove-item" data-id="{{ $row->id }}" data-action="{{ route('brand.destroy',[$row]) }}"><i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Inactive</a>
+                                                <a href="#" class="dropdown-item remove-item" data-id="{{ $row->id }}" data-action="{{ route('model.destroy',[$row]) }}"><i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Inactive</a>
                                             </li>
                                         </ul>
                                     </div>

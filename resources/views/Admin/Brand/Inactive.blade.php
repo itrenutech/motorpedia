@@ -38,7 +38,7 @@
                             <tr>
                                 <td>@php echo $i; @endphp</td>
                                 <td width="60%">{{$row->brand_name}}</td>
-                                <td><img src="{{URL::asset('brand')}}/{{$row->brand_logo}}" width="10%"></td>
+                                <td><img src="{{URL::asset('brand')}}/{{$row->brand_logo}}" width="50%"></td>
                                 <td>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
